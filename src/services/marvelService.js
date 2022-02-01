@@ -26,8 +26,18 @@ class MarvelService {
     return this._transformCharacter(res.data.results[0]);
   };
 
+  getCountCharacter = async (count) => {
+    const res = await this.getResource(
+      `${this._apiBase}characters?limit=${count}&${this._apiKey}`
+    );
+    return res.data.results.map((item) => {
+      return this._transformCharacter(item);
+    });
+  };
+
   _transformCharacter = (res) => {
     return {
+      id: res.id,
       name: res.name,
       description: res.description,
       thumbnail: `${res.thumbnail.path}.${res.thumbnail.extension}`,

@@ -8,7 +8,6 @@ import ErrorMassage from "../errorMassage/errorMassage";
 class RandomChar extends React.Component {
   constructor(props) {
     super(props);
-    this.updateChar();
   }
 
   state = {
@@ -16,6 +15,10 @@ class RandomChar extends React.Component {
     loading: true,
     error: false,
   };
+
+  componentDidMount() {
+    this.updateChar();
+  }
 
   marvelService = new MarvelService();
 
