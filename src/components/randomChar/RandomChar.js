@@ -6,10 +6,6 @@ import Spinner from "../spinner/spinner";
 import ErrorMassage from "../errorMassage/errorMassage";
 
 class RandomChar extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     char: {},
     loading: true,
