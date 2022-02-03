@@ -11,30 +11,48 @@ class CharList extends Component {
     chars: [],
     loading: true,
     error: false,
+    newItemLoading: false,
+    offset: 210,
   };
 
   componentDidMount() {
-    this.onCharsLoaded(9);
+    this.onRequest();
   }
 
   onError = () => {
     this.setState({ loading: false, error: true });
   };
 
-  onCharsLoaded = (count) => {
-    this.marvelService
-      .getCountCharacter(count)
-      .then((response) => this.setState({ chars: response, loading: false }))
+  onRequest = async (offset) => {
+    this.setState({ newItemLoading: true });
+    await this.marvelService
+      .getAllCharacters(offset)
+      .then((response) =>
+        this.setState(({ chars, offset }) => {
+          return {
+            chars: [...chars, ...response],
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9,
+          };
+        })
+      )
       .catch(this.onError);
   };
 
   render() {
-    const { chars, error, loading } = this.state;
+    const { chars, error, loading, newItemLoading, offset } = this.state;
     const { onCharSelected } = this.props;
     const errorMessage = error ? <ErrorMassage /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = !(loading || error) ? (
-      <View chars={chars} onCharSelected={onCharSelected} />
+      <View
+        chars={chars}
+        onCharSelected={onCharSelected}
+        newItemLoading={newItemLoading}
+        onRequest={this.onRequest}
+        offset={offset}
+      />
     ) : null;
     return (
       <div className="char__list">
@@ -46,7 +64,7 @@ class CharList extends Component {
   }
 }
 
-const View = ({ chars, onCharSelected }) => {
+const View = ({ chars, onCharSelected, newItemLoading, onRequest, offset }) => {
   return (
     <>
       <ul className="char__grid">
@@ -63,7 +81,11 @@ const View = ({ chars, onCharSelected }) => {
           );
         })}
       </ul>
-      <button className="button button__main button__long">
+      <button
+        onClick={() => onRequest(offset)}
+        disabled={newItemLoading}
+        className="button button__main button__long"
+      >
         <div className="inner">load more</div>
       </button>
     </>

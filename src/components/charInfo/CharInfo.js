@@ -23,6 +23,11 @@ class CharInfo extends Component {
     }
   }
 
+  componentDidCatch(error, info) {
+    console.log(error, info);
+    this.setState({ error: true });
+  }
+
   updateChar = () => {
     const { charId } = this.props;
     if (!charId) {
@@ -41,7 +46,6 @@ class CharInfo extends Component {
 
   render() {
     const { char } = this.state;
-    console.log(char);
 
     if (this.state.error) {
       return <ErrorMassage />;
@@ -65,17 +69,21 @@ class CharInfo extends Component {
                 </div>
               </div>
             </div>
-            <div className="char__descr">{char.description}</div>
+            <div className="char__descr">
+              {char.description ? char.description : "No description"}
+            </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-              {char.comics.map((comic, index) => {
-                return (
-                  <li key={index} className="char__comics-item">
-                    {comic.name}
-                  </li>
-                );
-              })}
-            </ul>{" "}
+              {char.comics
+                ? char.comics.map((comic, index) => {
+                    return (
+                      <li key={index} className="char__comics-item">
+                        {comic.name}
+                      </li>
+                    );
+                  })
+                : "no comics"}
+            </ul>
           </>
         ) : null}
       </div>
